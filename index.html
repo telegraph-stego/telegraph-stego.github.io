@@ -471,8 +471,9 @@ button#connect-btn:disabled:hover {
         <div class="broker-sq" id="broker-3" data-testid="broker-3" data-url="wss://test.mosquitto.org:8081/mqtt" title="Mosquitto (Тест)" style="background:#d4944a;"></div>
         <span class="broker-sq-label" id="broker-sq-label"></span>
       </div>
+      <button type="button" id="broker-custom-btn" data-testid="broker-custom-btn" style="display:none;color:#33ff33;background:transparent;border:none;cursor:pointer;font-family:'Courier New',monospace;font-size:13px;margin-top:8px;padding:0;">свой...</button>
       <div class="broker-custom-wrap" id="broker-custom-wrap">
-        <input type="text" id="broker-custom" data-testid="broker-custom" placeholder="wss://my-broker.example.com:8884/mqtt" autocomplete="off" spellcheck="false">
+        <input type="text" id="broker-custom" data-testid="broker-custom" placeholder="wss://..." autocomplete="off" spellcheck="false">
       </div>
     </div>
 
@@ -1589,6 +1590,7 @@ safe-buffer/index.js:
     var brokerCustomWrap = document.getElementById('broker-custom-wrap');
     var brokerCustom = document.getElementById('broker-custom');
     var brokerSqLabel = document.getElementById('broker-sq-label');
+    var brokerCustomBtn = document.getElementById('broker-custom-btn');
     var copyToast = document.getElementById('copy-toast');
     var selectedBrokerUrl = null;
     var brokerMode = 'auto';
@@ -1614,10 +1616,10 @@ safe-buffer/index.js:
         brokerModeAuto.classList.add('active');
         brokerModeSelect.classList.remove('active');
         brokerButtons.classList.remove('visible');
+        brokerCustomBtn.style.display = 'none';
         brokerCustomWrap.classList.remove('visible');
         selectedBrokerUrl = null;
         brokerSqLabel.textContent = '';
-        // Deselect all squares
         var sqs = brokerButtons.querySelectorAll('.broker-sq');
         for (var i = 0; i < sqs.length; i++) sqs[i].classList.remove('selected');
         connectBtn.disabled = false;
@@ -1625,7 +1627,7 @@ safe-buffer/index.js:
         brokerModeAuto.classList.remove('active');
         brokerModeSelect.classList.add('active');
         brokerButtons.classList.add('visible');
-        // Disable connect until a broker is selected
+        brokerCustomBtn.style.display = '';
         if (!selectedBrokerUrl) connectBtn.disabled = true;
       }
     }
@@ -1651,16 +1653,21 @@ safe-buffer/index.js:
       })(brokerSquares[i]);
     }
 
-    // Custom broker button (use broker-custom label area as trigger)
-    brokerSqLabel.addEventListener('click', function() {
-      if (brokerMode !== 'select') return;
-      // Deselect all squares
+    // Custom broker button
+    brokerCustomBtn.addEventListener('click', function() {
       for (var j = 0; j < brokerSquares.length; j++) brokerSquares[j].classList.remove('selected');
       selectedBrokerUrl = null;
-      brokerSqLabel.textContent = 'Custom...';
+      brokerSqLabel.textContent = '';
       brokerCustomWrap.classList.add('visible');
       brokerCustom.focus();
-      connectBtn.disabled = false;
+      connectBtn.disabled = !brokerCustom.value.trim();
+    });
+
+    // Enable CONNECT as user types custom URL
+    brokerCustom.addEventListener('input', function() {
+      if (brokerMode === 'select' && !selectedBrokerUrl) {
+        connectBtn.disabled = !brokerCustom.value.trim();
+      }
     });
 
     // --- Copy message on double-click / long-tap ---
