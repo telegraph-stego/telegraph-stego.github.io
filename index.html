@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +45,7 @@ body {
 .header {
   text-align: center;
   margin-bottom: 16px;
+  position: relative;
 }
 
 .header h1 {
@@ -438,6 +439,33 @@ button#connect-btn:disabled:hover {
 #test-overlay {
   isolation: isolate;
 }
+
+.lang-switcher {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+}
+
+.lang-switcher .lang-sep {
+  color: #1a7a1a;
+  margin: 0 2px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  padding: 0;
+  color: #1a7a1a;
+}
+
+.lang-btn.active {
+  color: #33ff33;
+}
 </style>
 </head>
 <body>
@@ -446,24 +474,25 @@ button#connect-btn:disabled:hover {
   <div id="login-screen">
     <div class="header">
       <h1>&middot; TELEGRAPH &middot;</h1>
-      <div class="subtitle">STEGANOGRAPHIC COMMUNICATIONS</div>
+      <div class="subtitle" data-i18n="subtitle">STEGANOGRAPHIC COMMUNICATIONS</div>
+      <div class="lang-switcher" id="lang-switcher" data-testid="lang-switcher"></div>
     </div>
 
     <div class="field">
-      <label>CODE PHRASE</label>
+      <label data-i18n="codephrase">CODE PHRASE</label>
       <input type="password" id="seed-input" data-testid="seed-input" autocomplete="off" spellcheck="false">
     </div>
 
     <div class="field">
-      <label>CALLSIGN</label>
+      <label data-i18n="callsign">CALLSIGN</label>
       <input type="text" id="callsign-input" data-testid="callsign-input" maxlength="16" autocomplete="off" spellcheck="false">
     </div>
 
     <div class="broker-group">
-      <div class="broker-label">BROKER</div>
+      <div class="broker-label" data-i18n="broker">BROKER</div>
       <div class="broker-mode-toggle">
-        <button type="button" class="broker-mode-btn active" id="broker-mode-auto" data-testid="broker-mode-auto">AUTO</button>
-        <button type="button" class="broker-mode-btn" id="broker-mode-select" data-testid="broker-mode-select">SELECT</button>
+        <button type="button" class="broker-mode-btn active" id="broker-mode-auto" data-testid="broker-mode-auto" data-i18n="auto">AUTO</button>
+        <button type="button" class="broker-mode-btn" id="broker-mode-select" data-testid="broker-mode-select" data-i18n="select">SELECT</button>
       </div>
       <div class="broker-buttons" id="broker-buttons">
         <div class="broker-sq" id="broker-1" data-testid="broker-1" data-url="wss://broker.hivemq.com:8884/mqtt" title="HiveMQ (Германия)" style="background:#4a90d9;"></div>
@@ -471,50 +500,23 @@ button#connect-btn:disabled:hover {
         <div class="broker-sq" id="broker-3" data-testid="broker-3" data-url="wss://test.mosquitto.org:8081/mqtt" title="Mosquitto (Тест)" style="background:#d4944a;"></div>
         <span class="broker-sq-label" id="broker-sq-label"></span>
       </div>
-      <button type="button" id="broker-custom-btn" data-testid="broker-custom-btn" style="display:none;color:#33ff33;background:transparent;border:none;cursor:pointer;font-family:'Courier New',monospace;font-size:13px;margin-top:8px;padding:0;">свой...</button>
+      <button type="button" id="broker-custom-btn" data-testid="broker-custom-btn" data-i18n="custom" style="display:none;color:#33ff33;background:transparent;border:none;cursor:pointer;font-family:'Courier New',monospace;font-size:13px;margin-top:8px;padding:0;">custom...</button>
       <div class="broker-custom-wrap" id="broker-custom-wrap">
         <input type="text" id="broker-custom" data-testid="broker-custom" placeholder="wss://..." autocomplete="off" spellcheck="false">
       </div>
     </div>
 
-    <button id="connect-btn" data-testid="connect-btn">CONNECT</button>
+    <button id="connect-btn" data-testid="connect-btn" data-i18n="connect">CONNECT</button>
     <div class="connect-error" id="connect-error" data-testid="connect-error"></div>
 
-    <div class="collapsible-toggle" data-testid="toggle-howto" onclick="var c=this.nextElementSibling;c.classList.toggle('open');this.textContent=c.classList.contains('open')?'\u25be КАК ПОЛЬЗОВАТЬСЯ':'\u25b8 КАК ПОЛЬЗОВАТЬСЯ'">&triangleright; КАК ПОЛЬЗОВАТЬСЯ</div>
-    <div class="collapsible-content">
-      <div class="about-block" data-testid="about-block">ТЕЛЕГРАФ — средство обмена короткими текстовыми сообщениями через стандартные IoT-протоколы. Не хранит данные, не требует регистрации, не использует серверы.
-
-<span class="about-heading">ИНСТРУКЦИЯ</span>
-1. Договоритесь с собеседником о кодовой фразе и брокере при личной встрече
-2. Передайте ему этот файл любым способом
-3. Убедитесь что время на устройствах точное (time.is)
-4. Оба откройте файл и введите одну и ту же кодовую фразу
-5. Придумайте себе позывной — его увидит собеседник
-6. Нажмите «Подключиться» и дождитесь зелёного индикатора
-7. Пишите сообщения до 128 символов
-8. При нажатии кнопки [✕] чат закрывается, переписка удаляется
-
-<span class="about-heading">ВАЖНО</span>
-- Оба собеседника должны быть онлайн одновременно
-- Если собеседник офлайн — сообщение теряется безвозвратно
-- При закрытии вкладки или отключении — вся переписка исчезает
-- Кодовую фразу нельзя передавать через интернет
-- Одну кодовую фразу могут использовать несколько человек — все увидят сообщения всех, как на общей радиочастоте
-- Часы на устройствах обоих собеседников должны быть точными (допуск ±1 минута). Проверьте время: time.is
-- Оба собеседника должны использовать один и тот же брокер
-- Для максимальной приватности используйте свой MQTT-брокер (docker run -p 8884:8884 eclipse-mosquitto)
-
-<span class="about-heading">РЕЖИМ СВЯЗИ</span>
-Телеграф работает как рация, а не как обычный мессенджер. Оба собеседника должны быть на связи одновременно. Нет сервера, нет истории, нет «доставлено позже». Если собеседник офлайн — сообщение уходит в пустоту. Договоритесь о времени сеансов заранее, как радисты договариваются о частоте и расписании.
-
-Ctrl+T — самотестирование, Ctrl+D — диагностика (на экране телеграфа)</div>
+    <div class="collapsible-toggle" id="toggle-howto" data-testid="toggle-howto">&triangleright; HOW TO USE</div>
+    <div class="collapsible-content" id="howto-content">
+      <div class="about-block" data-testid="about-block" id="about-block"></div>
     </div>
 
-    <div class="collapsible-toggle" data-testid="toggle-legal" onclick="var c=this.nextElementSibling;c.classList.toggle('open');this.textContent=c.classList.contains('open')?'\u25be ПРАВОВАЯ ИНФОРМАЦИЯ':'\u25b8 ПРАВОВАЯ ИНФОРМАЦИЯ'">&triangleright; ПРАВОВАЯ ИНФОРМАЦИЯ</div>
-    <div class="collapsible-content">
-      <div class="disclaimer-block" data-testid="disclaimer-block">Данное ПО носит экспериментальный исследовательский характер, не преследует коммерческих целей и реализует идеи, описанные в открытой научной литературе.
-
-ПРАВОВАЯ ИНФОРМАЦИЯ. Данное программное обеспечение не является средством шифрования и не подлежит лицензированию по ПКЗ-2005. Не является организатором распространения информации (ОРИ) по ФЗ-149, не осуществляет хранение данных по ФЗ-374. Использует стандартный транспортный протокол MQTT и штатное TLS-шифрование на уровне WebSocket. Ответственность за содержание передаваемых сообщений несут пользователи. Разработчик не контролирует, не хранит и не имеет доступа к содержанию сообщений.</div>
+    <div class="collapsible-toggle" id="toggle-legal" data-testid="toggle-legal">&triangleright; LEGAL INFORMATION</div>
+    <div class="collapsible-content" id="legal-content">
+      <div class="disclaimer-block" data-testid="disclaimer-block" id="disclaimer-block"></div>
     </div>
   </div>
 
@@ -527,7 +529,7 @@ Ctrl+T — самотестирование, Ctrl+D — диагностика (
     <div id="peer-status" data-testid="peer-status"></div>
     <div id="input-area">
       <input type="text" id="message-input" data-testid="message-input" maxlength="128" placeholder="..." autocomplete="off" spellcheck="false">
-      <button id="send-btn" data-testid="send-btn">[TX]</button>
+      <button id="send-btn" data-testid="send-btn" data-i18n="send">[TX]</button>
     </div>
     <div id="status-bar">
       <span id="char-count">0/128</span>
@@ -537,7 +539,7 @@ Ctrl+T — самотестирование, Ctrl+D — диагностика (
     <div id="message-feed" data-testid="message-feed"></div>
   </div>
 </div>
-<div class="copy-toast" id="copy-toast">скопировано</div>
+<div class="copy-toast" id="copy-toast" data-i18n="copied">copied</div>
 
 <script id="mqtt-inline">
 // mqtt.js v5.10.4 | https://github.com/mqttjs/MQTT.js | MIT License
@@ -579,6 +581,81 @@ safe-buffer/index.js:
   var BEEP_FREQUENCY = 800;             // Hz
   var BEEP_DURATION = 0.05;             // seconds
   var BEEP_VOLUME = 0.1;
+
+  // === LOCALIZATION ===
+  // To add a new language: copy the 'en' block, translate values,
+  // add with new key (e.g. "de", "zh", "es").
+  // The language switcher updates automatically.
+
+  var STRINGS = {
+    en: {
+      _name: 'EN',
+      codephrase: 'CODE PHRASE',
+      callsign: 'CALLSIGN',
+      broker: 'BROKER',
+      auto: 'AUTO',
+      select: 'SELECT',
+      connect: 'CONNECT',
+      connecting: 'CONNECTING...',
+      howto: 'HOW TO USE',
+      legal: 'LEGAL INFORMATION',
+      defaultBroker: 'default broker',
+      custom: 'custom...',
+      send: '[TX]',
+      waitingPeer: 'waiting for peer...',
+      online: 'online',
+      offline: 'offline',
+      rotation: 'rotation',
+      copied: 'copied',
+      thirdParty: '\u26a0 THIRD PARTICIPANT DETECTED! CHANNEL COMPROMISED. CHANGE CODE PHRASE.',
+      connectError: 'Connection failed. Try SELECT mode.',
+      noBroker: 'Select a broker',
+      pkt: 'pkt',
+      subtitle: 'STEGANOGRAPHIC COMMUNICATIONS',
+      urlError: 'URL must start with wss:// or ws://',
+      brokerTimeout: 'Broker unavailable (timeout {s} sec)',
+      connectErrorGeneric: 'Connection error: {msg}',
+      howtoContent: 'TELEGRAPH is a tool for exchanging short text messages via standard IoT protocols. It does not store data, does not require registration, and does not use servers.\n\nINSTRUCTIONS\n1. Agree on a code phrase and broker with your contact in person\n2. Share this file with them by any means\n3. Make sure device clocks are accurate (time.is)\n4. Both open the file and enter the same code phrase\n5. Choose a callsign \u2014 your contact will see it\n6. Press \u201cConnect\u201d and wait for the green indicator\n7. Write messages up to 128 characters\n8. Press [\u2715] to close chat and delete conversation\n\nIMPORTANT\n- Both participants must be online simultaneously\n- If peer is offline \u2014 the message is lost permanently\n- Closing the tab or disconnecting erases all messages\n- Never transmit the code phrase over the internet\n- Multiple people can use the same code phrase \u2014 everyone sees all messages, like a shared radio frequency\n- Device clocks must be accurate (\u00b11 minute tolerance). Check time: time.is\n- Both participants must use the same broker\n- For maximum privacy use your own MQTT broker (docker run -p 8884:8884 eclipse-mosquitto)\n\nCOMMUNICATION MODE\nTelegraph works like a radio, not a regular messenger. Both participants must be online simultaneously. No server, no history, no \u201cdelivered later\u201d. If your contact is offline \u2014 the message goes into the void. Agree on session times in advance, like radio operators agree on frequency and schedule.\n\nCtrl+T \u2014 self-test, Ctrl+D \u2014 diagnostics (on telegraph screen)',
+      legalContent: 'This software is experimental and research-oriented, does not pursue commercial goals, and implements ideas described in open scientific literature.\n\nLEGAL INFORMATION. This software is not an encryption tool and is not subject to licensing under PKZ-2005. It is not an information distribution organizer (ORI) under FZ-149, and does not store data under FZ-374. It uses the standard MQTT transport protocol and standard TLS encryption at the WebSocket level. Users are responsible for the content of transmitted messages. The developer does not control, store, or have access to message content.'
+    },
+    ru: {
+      _name: 'RU',
+      codephrase: '\u041a\u041e\u0414\u041e\u0412\u0410\u042f \u0424\u0420\u0410\u0417\u0410',
+      callsign: '\u041f\u041e\u0417\u042b\u0412\u041d\u041e\u0419',
+      broker: '\u0411\u0420\u041e\u041a\u0415\u0420',
+      auto: '\u0410\u0412\u0422\u041e',
+      select: '\u0412\u042b\u0411\u041e\u0420',
+      connect: '\u041f\u041e\u0414\u041a\u041b\u042e\u0427\u0418\u0422\u042c\u0421\u042f',
+      connecting: '\u041f\u041e\u0414\u041a\u041b\u042e\u0427\u0415\u041d\u0418\u0415...',
+      howto: '\u041a\u0410\u041a \u041f\u041e\u041b\u042c\u0417\u041e\u0412\u0410\u0422\u042c\u0421\u042f',
+      legal: '\u041f\u0420\u0410\u0412\u041e\u0412\u0410\u042f \u0418\u041d\u0424\u041e\u0420\u041c\u0410\u0426\u0418\u042f',
+      defaultBroker: '\u0431\u0440\u043e\u043a\u0435\u0440 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e',
+      custom: '\u0441\u0432\u043e\u0439...',
+      send: '[TX]',
+      waitingPeer: '\u043e\u0436\u0438\u0434\u0430\u043d\u0438\u0435 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\u0430...',
+      online: '\u043d\u0430 \u0441\u0432\u044f\u0437\u0438',
+      offline: '\u043d\u0435\u0442 \u0441\u0432\u044f\u0437\u0438',
+      rotation: '\u0440\u043e\u0442\u0430\u0446\u0438\u044f',
+      copied: '\u0441\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e',
+      thirdParty: '\u26a0 \u041e\u0411\u041d\u0410\u0420\u0423\u0416\u0415\u041d \u0422\u0420\u0415\u0422\u0418\u0419 \u0423\u0427\u0410\u0421\u0422\u041d\u0418\u041a! \u041a\u0410\u041d\u0410\u041b \u0421\u041a\u041e\u041c\u041f\u0420\u041e\u041c\u0415\u0422\u0418\u0420\u041e\u0412\u0410\u041d. \u0421\u041c\u0415\u041d\u0418\u0422\u0415 \u041a\u041e\u0414\u041e\u0412\u0423\u042e \u0424\u0420\u0410\u0417\u0423.',
+      connectError: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c\u0441\u044f. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0440\u0435\u0436\u0438\u043c \u0412\u042b\u0411\u041e\u0420.',
+      noBroker: '\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0431\u0440\u043e\u043a\u0435\u0440',
+      pkt: '\u043f\u043a\u0442',
+      subtitle: '\u0421\u0422\u0415\u0413\u0410\u041d\u041e\u0413\u0420\u0410\u0424\u0418\u0427\u0415\u0421\u041a\u0410\u042f \u0421\u0412\u042f\u0417\u042c',
+      urlError: 'URL \u0434\u043e\u043b\u0436\u0435\u043d \u043d\u0430\u0447\u0438\u043d\u0430\u0442\u044c\u0441\u044f \u0441 wss:// \u0438\u043b\u0438 ws://',
+      brokerTimeout: '\u0411\u0440\u043e\u043a\u0435\u0440 \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u0435\u043d (\u0442\u0430\u0439\u043c\u0430\u0443\u0442 {s} \u0441\u0435\u043a)',
+      connectErrorGeneric: '\u041e\u0448\u0438\u0431\u043a\u0430 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u044f: {msg}',
+      howtoContent: '\u0422\u0415\u041b\u0415\u0413\u0420\u0410\u0424 \u2014 \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u043e \u043e\u0431\u043c\u0435\u043d\u0430 \u043a\u043e\u0440\u043e\u0442\u043a\u0438\u043c\u0438 \u0442\u0435\u043a\u0441\u0442\u043e\u0432\u044b\u043c\u0438 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f\u043c\u0438 \u0447\u0435\u0440\u0435\u0437 \u0441\u0442\u0430\u043d\u0434\u0430\u0440\u0442\u043d\u044b\u0435 IoT-\u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b\u044b. \u041d\u0435 \u0445\u0440\u0430\u043d\u0438\u0442 \u0434\u0430\u043d\u043d\u044b\u0435, \u043d\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438, \u043d\u0435 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u0442 \u0441\u0435\u0440\u0432\u0435\u0440\u044b.\n\n\u0418\u041d\u0421\u0422\u0420\u0423\u041a\u0426\u0418\u042f\n1. \u0414\u043e\u0433\u043e\u0432\u043e\u0440\u0438\u0442\u0435\u0441\u044c \u0441 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\u043e\u043c \u043e \u043a\u043e\u0434\u043e\u0432\u043e\u0439 \u0444\u0440\u0430\u0437\u0435 \u0438 \u0431\u0440\u043e\u043a\u0435\u0440\u0435 \u043f\u0440\u0438 \u043b\u0438\u0447\u043d\u043e\u0439 \u0432\u0441\u0442\u0440\u0435\u0447\u0435\n2. \u041f\u0435\u0440\u0435\u0434\u0430\u0439\u0442\u0435 \u0435\u043c\u0443 \u044d\u0442\u043e\u0442 \u0444\u0430\u0439\u043b \u043b\u044e\u0431\u044b\u043c \u0441\u043f\u043e\u0441\u043e\u0431\u043e\u043c\n3. \u0423\u0431\u0435\u0434\u0438\u0442\u0435\u0441\u044c \u0447\u0442\u043e \u0432\u0440\u0435\u043c\u044f \u043d\u0430 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430\u0445 \u0442\u043e\u0447\u043d\u043e\u0435 (time.is)\n4. \u041e\u0431\u0430 \u043e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0444\u0430\u0439\u043b \u0438 \u0432\u0432\u0435\u0434\u0438\u0442\u0435 \u043e\u0434\u043d\u0443 \u0438 \u0442\u0443 \u0436\u0435 \u043a\u043e\u0434\u043e\u0432\u0443\u044e \u0444\u0440\u0430\u0437\u0443\n5. \u041f\u0440\u0438\u0434\u0443\u043c\u0430\u0439\u0442\u0435 \u0441\u0435\u0431\u0435 \u043f\u043e\u0437\u044b\u0432\u043d\u043e\u0439 \u2014 \u0435\u0433\u043e \u0443\u0432\u0438\u0434\u0438\u0442 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\n6. \u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c\u0441\u044f\u00bb \u0438 \u0434\u043e\u0436\u0434\u0438\u0442\u0435\u0441\u044c \u0437\u0435\u043b\u0451\u043d\u043e\u0433\u043e \u0438\u043d\u0434\u0438\u043a\u0430\u0442\u043e\u0440\u0430\n7. \u041f\u0438\u0448\u0438\u0442\u0435 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f \u0434\u043e 128 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432\n8. \u041f\u0440\u0438 \u043d\u0430\u0436\u0430\u0442\u0438\u0438 \u043a\u043d\u043e\u043f\u043a\u0438 [\u2715] \u0447\u0430\u0442 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0435\u0442\u0441\u044f, \u043f\u0435\u0440\u0435\u043f\u0438\u0441\u043a\u0430 \u0443\u0434\u0430\u043b\u044f\u0435\u0442\u0441\u044f\n\n\u0412\u0410\u0416\u041d\u041e\n- \u041e\u0431\u0430 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\u0430 \u0434\u043e\u043b\u0436\u043d\u044b \u0431\u044b\u0442\u044c \u043e\u043d\u043b\u0430\u0439\u043d \u043e\u0434\u043d\u043e\u0432\u0440\u0435\u043c\u0435\u043d\u043d\u043e\n- \u0415\u0441\u043b\u0438 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a \u043e\u0444\u043b\u0430\u0439\u043d \u2014 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u0442\u0435\u0440\u044f\u0435\u0442\u0441\u044f \u0431\u0435\u0437\u0432\u043e\u0437\u0432\u0440\u0430\u0442\u043d\u043e\n- \u041f\u0440\u0438 \u0437\u0430\u043a\u0440\u044b\u0442\u0438\u0438 \u0432\u043a\u043b\u0430\u0434\u043a\u0438 \u0438\u043b\u0438 \u043e\u0442\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0438 \u2014 \u0432\u0441\u044f \u043f\u0435\u0440\u0435\u043f\u0438\u0441\u043a\u0430 \u0438\u0441\u0447\u0435\u0437\u0430\u0435\u0442\n- \u041a\u043e\u0434\u043e\u0432\u0443\u044e \u0444\u0440\u0430\u0437\u0443 \u043d\u0435\u043b\u044c\u0437\u044f \u043f\u0435\u0440\u0435\u0434\u0430\u0432\u0430\u0442\u044c \u0447\u0435\u0440\u0435\u0437 \u0438\u043d\u0442\u0435\u0440\u043d\u0435\u0442\n- \u041e\u0434\u043d\u0443 \u043a\u043e\u0434\u043e\u0432\u0443\u044e \u0444\u0440\u0430\u0437\u0443 \u043c\u043e\u0433\u0443\u0442 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u043d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0447\u0435\u043b\u043e\u0432\u0435\u043a \u2014 \u0432\u0441\u0435 \u0443\u0432\u0438\u0434\u044f\u0442 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f \u0432\u0441\u0435\u0445, \u043a\u0430\u043a \u043d\u0430 \u043e\u0431\u0449\u0435\u0439 \u0440\u0430\u0434\u0438\u043e\u0447\u0430\u0441\u0442\u043e\u0442\u0435\n- \u0427\u0430\u0441\u044b \u043d\u0430 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430\u0445 \u043e\u0431\u043e\u0438\u0445 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\u043e\u0432 \u0434\u043e\u043b\u0436\u043d\u044b \u0431\u044b\u0442\u044c \u0442\u043e\u0447\u043d\u044b\u043c\u0438 (\u0434\u043e\u043f\u0443\u0441\u043a \u00b11 \u043c\u0438\u043d\u0443\u0442\u0430). \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u0432\u0440\u0435\u043c\u044f: time.is\n- \u041e\u0431\u0430 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\u0430 \u0434\u043e\u043b\u0436\u043d\u044b \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u043e\u0434\u0438\u043d \u0438 \u0442\u043e\u0442 \u0436\u0435 \u0431\u0440\u043e\u043a\u0435\u0440\n- \u0414\u043b\u044f \u043c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0439 \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u043e\u0441\u0442\u0438 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 \u0441\u0432\u043e\u0439 MQTT-\u0431\u0440\u043e\u043a\u0435\u0440 (docker run -p 8884:8884 eclipse-mosquitto)\n\n\u0420\u0415\u0416\u0418\u041c \u0421\u0412\u042f\u0417\u0418\n\u0422\u0435\u043b\u0435\u0433\u0440\u0430\u0444 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u043a\u0430\u043a \u0440\u0430\u0446\u0438\u044f, \u0430 \u043d\u0435 \u043a\u0430\u043a \u043e\u0431\u044b\u0447\u043d\u044b\u0439 \u043c\u0435\u0441\u0441\u0435\u043d\u0434\u0436\u0435\u0440. \u041e\u0431\u0430 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\u0430 \u0434\u043e\u043b\u0436\u043d\u044b \u0431\u044b\u0442\u044c \u043d\u0430 \u0441\u0432\u044f\u0437\u0438 \u043e\u0434\u043d\u043e\u0432\u0440\u0435\u043c\u0435\u043d\u043d\u043e. \u041d\u0435\u0442 \u0441\u0435\u0440\u0432\u0435\u0440\u0430, \u043d\u0435\u0442 \u0438\u0441\u0442\u043e\u0440\u0438\u0438, \u043d\u0435\u0442 \u00ab\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u0435\u043d\u043e \u043f\u043e\u0437\u0436\u0435\u00bb. \u0415\u0441\u043b\u0438 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a \u043e\u0444\u043b\u0430\u0439\u043d \u2014 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u0443\u0445\u043e\u0434\u0438\u0442 \u0432 \u043f\u0443\u0441\u0442\u043e\u0442\u0443. \u0414\u043e\u0433\u043e\u0432\u043e\u0440\u0438\u0442\u0435\u0441\u044c \u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438 \u0441\u0435\u0430\u043d\u0441\u043e\u0432 \u0437\u0430\u0440\u0430\u043d\u0435\u0435, \u043a\u0430\u043a \u0440\u0430\u0434\u0438\u0441\u0442\u044b \u0434\u043e\u0433\u043e\u0432\u0430\u0440\u0438\u0432\u0430\u044e\u0442\u0441\u044f \u043e \u0447\u0430\u0441\u0442\u043e\u0442\u0435 \u0438 \u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u0438.\n\nCtrl+T \u2014 \u0441\u0430\u043c\u043e\u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435, Ctrl+D \u2014 \u0434\u0438\u0430\u0433\u043d\u043e\u0441\u0442\u0438\u043a\u0430 (\u043d\u0430 \u044d\u043a\u0440\u0430\u043d\u0435 \u0442\u0435\u043b\u0435\u0433\u0440\u0430\u0444\u0430)',
+      legalContent: '\u0414\u0430\u043d\u043d\u043e\u0435 \u041f\u041e \u043d\u043e\u0441\u0438\u0442 \u044d\u043a\u0441\u043f\u0435\u0440\u0438\u043c\u0435\u043d\u0442\u0430\u043b\u044c\u043d\u044b\u0439 \u0438\u0441\u0441\u043b\u0435\u0434\u043e\u0432\u0430\u0442\u0435\u043b\u044c\u0441\u043a\u0438\u0439 \u0445\u0430\u0440\u0430\u043a\u0442\u0435\u0440, \u043d\u0435 \u043f\u0440\u0435\u0441\u043b\u0435\u0434\u0443\u0435\u0442 \u043a\u043e\u043c\u043c\u0435\u0440\u0447\u0435\u0441\u043a\u0438\u0445 \u0446\u0435\u043b\u0435\u0439 \u0438 \u0440\u0435\u0430\u043b\u0438\u0437\u0443\u0435\u0442 \u0438\u0434\u0435\u0438, \u043e\u043f\u0438\u0441\u0430\u043d\u043d\u044b\u0435 \u0432 \u043e\u0442\u043a\u0440\u044b\u0442\u043e\u0439 \u043d\u0430\u0443\u0447\u043d\u043e\u0439 \u043b\u0438\u0442\u0435\u0440\u0430\u0442\u0443\u0440\u0435.\n\n\u041f\u0420\u0410\u0412\u041e\u0412\u0410\u042f \u0418\u041d\u0424\u041e\u0420\u041c\u0410\u0426\u0418\u042f. \u0414\u0430\u043d\u043d\u043e\u0435 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u043d\u043e\u0435 \u043e\u0431\u0435\u0441\u043f\u0435\u0447\u0435\u043d\u0438\u0435 \u043d\u0435 \u044f\u0432\u043b\u044f\u0435\u0442\u0441\u044f \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u043e\u043c \u0448\u0438\u0444\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u0438 \u043d\u0435 \u043f\u043e\u0434\u043b\u0435\u0436\u0438\u0442 \u043b\u0438\u0446\u0435\u043d\u0437\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044e \u043f\u043e \u041f\u041a\u0417-2005. \u041d\u0435 \u044f\u0432\u043b\u044f\u0435\u0442\u0441\u044f \u043e\u0440\u0433\u0430\u043d\u0438\u0437\u0430\u0442\u043e\u0440\u043e\u043c \u0440\u0430\u0441\u043f\u0440\u043e\u0441\u0442\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u0438 (\u041e\u0420\u0418) \u043f\u043e \u0424\u0417-149, \u043d\u0435 \u043e\u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043b\u044f\u0435\u0442 \u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435 \u0434\u0430\u043d\u043d\u044b\u0445 \u043f\u043e \u0424\u0417-374. \u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u0442 \u0441\u0442\u0430\u043d\u0434\u0430\u0440\u0442\u043d\u044b\u0439 \u0442\u0440\u0430\u043d\u0441\u043f\u043e\u0440\u0442\u043d\u044b\u0439 \u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b MQTT \u0438 \u0448\u0442\u0430\u0442\u043d\u043e\u0435 TLS-\u0448\u0438\u0444\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u043d\u0430 \u0443\u0440\u043e\u0432\u043d\u0435 WebSocket. \u041e\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0435\u043d\u043d\u043e\u0441\u0442\u044c \u0437\u0430 \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u0435 \u043f\u0435\u0440\u0435\u0434\u0430\u0432\u0430\u0435\u043c\u044b\u0445 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0439 \u043d\u0435\u0441\u0443\u0442 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0438. \u0420\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u0447\u0438\u043a \u043d\u0435 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0438\u0440\u0443\u0435\u0442, \u043d\u0435 \u0445\u0440\u0430\u043d\u0438\u0442 \u0438 \u043d\u0435 \u0438\u043c\u0435\u0435\u0442 \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u043a \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044e \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0439.'
+    }
+  };
+
+  var browserLang = (navigator.language || '').split('-')[0].toLowerCase();
+  var currentLang = STRINGS[browserLang] ? browserLang : 'en';
+
+  function t(key) {
+    return (STRINGS[currentLang] && STRINGS[currentLang][key]) || (STRINGS['en'] && STRINGS['en'][key]) || key;
+  }
 
   // --- Shared helpers ---
 
@@ -1609,6 +1686,91 @@ safe-buffer/index.js:
     var countdownTimer = null;
     var originalTitle = '\u00b7 TELEGRAPH \u00b7';
 
+    // --- Localization: switcher and updateUI ---
+    var langSwitcher = document.getElementById('lang-switcher');
+    var toggleHowto = document.getElementById('toggle-howto');
+    var toggleLegal = document.getElementById('toggle-legal');
+    var aboutBlock = document.getElementById('about-block');
+    var disclaimerBlock = document.getElementById('disclaimer-block');
+    var howtoContentEl = document.getElementById('howto-content');
+    var legalContentEl = document.getElementById('legal-content');
+
+    function updateUI() {
+      // Update all data-i18n elements
+      var els = document.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < els.length; i++) {
+        var key = els[i].getAttribute('data-i18n');
+        if (key) els[i].textContent = t(key);
+      }
+      // Collapsible toggles (preserve open/closed arrow)
+      var howtoOpen = howtoContentEl.classList.contains('open');
+      toggleHowto.textContent = (howtoOpen ? '\u25be ' : '\u25b9 ') + t('howto');
+      var legalOpen = legalContentEl.classList.contains('open');
+      toggleLegal.textContent = (legalOpen ? '\u25be ' : '\u25b9 ') + t('legal');
+      // Content blocks
+      aboutBlock.textContent = t('howtoContent');
+      disclaimerBlock.textContent = t('legalContent');
+      // Pkt counter
+      if (telegraph) {
+        pktCount.textContent = t('pkt') + ': ' + telegraph.getStats().packetsSent;
+      } else {
+        pktCount.textContent = t('pkt') + ': 0';
+      }
+      // Copy toast
+      copyToast.textContent = t('copied');
+      // Lang switcher: update active state
+      var langBtns = langSwitcher.querySelectorAll('.lang-btn');
+      for (var j = 0; j < langBtns.length; j++) {
+        if (langBtns[j].getAttribute('data-lang') === currentLang) {
+          langBtns[j].classList.add('active');
+        } else {
+          langBtns[j].classList.remove('active');
+        }
+      }
+      // html lang attribute
+      document.documentElement.lang = currentLang;
+    }
+
+    // Build language switcher dynamically
+    var langKeys = Object.keys(STRINGS);
+    for (var li = 0; li < langKeys.length; li++) {
+      if (li > 0) {
+        var sep = document.createElement('span');
+        sep.className = 'lang-sep';
+        sep.textContent = '|';
+        langSwitcher.appendChild(sep);
+      }
+      var langBtn = document.createElement('button');
+      langBtn.type = 'button';
+      langBtn.className = 'lang-btn' + (langKeys[li] === currentLang ? ' active' : '');
+      langBtn.setAttribute('data-lang', langKeys[li]);
+      langBtn.setAttribute('data-testid', 'lang-' + langKeys[li]);
+      langBtn.textContent = STRINGS[langKeys[li]]._name;
+      langBtn.addEventListener('click', (function(lang) {
+        return function() {
+          currentLang = lang;
+          updateUI();
+        };
+      })(langKeys[li]));
+      langSwitcher.appendChild(langBtn);
+    }
+
+    // Collapsible toggle click handlers
+    toggleHowto.addEventListener('click', function() {
+      howtoContentEl.classList.toggle('open');
+      var isOpen = howtoContentEl.classList.contains('open');
+      toggleHowto.textContent = (isOpen ? '\u25be ' : '\u25b9 ') + t('howto');
+    });
+
+    toggleLegal.addEventListener('click', function() {
+      legalContentEl.classList.toggle('open');
+      var isOpen = legalContentEl.classList.contains('open');
+      toggleLegal.textContent = (isOpen ? '\u25be ' : '\u25b9 ') + t('legal');
+    });
+
+    // Initial UI update
+    updateUI();
+
     // --- Broker mode toggle ---
     function setBrokerMode(mode) {
       brokerMode = mode;
@@ -1764,7 +1926,7 @@ safe-buffer/index.js:
       var secsLeft = slotSecs - Math.floor((Date.now() % FHSS_INTERVAL) / 1000);
       var m = Math.floor(secsLeft / 60);
       var s = secsLeft % 60;
-      fhssCountdown.textContent = '\u0440\u043e\u0442\u0430\u0446\u0438\u044f \u27f3 ' + m + ':' + s.toString().padStart(2, '0');
+      fhssCountdown.textContent = t('rotation') + ' \u27f3 ' + m + ':' + s.toString().padStart(2, '0');
     }
 
     function startCountdown() {
@@ -1813,7 +1975,7 @@ safe-buffer/index.js:
       telegraph.send(text);
       messageInput.value = '';
       charCount.textContent = '0/128';
-      pktCount.textContent = 'pkt: ' + telegraph.getStats().packetsSent;
+      pktCount.textContent = t('pkt') + ': ' + telegraph.getStats().packetsSent;
       messageInput.focus();
     }
 
@@ -1841,7 +2003,7 @@ safe-buffer/index.js:
 
       messageFeed.innerHTML = '';
       charCount.textContent = '0/128';
-      pktCount.textContent = 'pkt: 0';
+      pktCount.textContent = t('pkt') + ': 0';
       messageInput.value = '';
       peerStatus.textContent = '';
       peerStatus.className = '';
@@ -1860,7 +2022,7 @@ safe-buffer/index.js:
       loginScreen.style.display = '';
       document.body.style.alignItems = '';
       connectBtn.disabled = (brokerMode === 'select' && !selectedBrokerUrl && !brokerCustom.value.trim());
-      connectBtn.textContent = 'CONNECT';
+      connectBtn.textContent = t('connect');
       connectError.style.display = 'none';
     }
 
@@ -1884,7 +2046,7 @@ safe-buffer/index.js:
         // Custom URL in SELECT mode
         var customUrl = brokerCustom.value.trim();
         if (!customUrl || (customUrl.indexOf('wss://') !== 0 && customUrl.indexOf('ws://') !== 0)) {
-          connectError.textContent = 'URL должен начинаться с wss:// или ws://';
+          connectError.textContent = t('urlError');
           connectError.style.display = 'block';
           return;
         }
@@ -1918,18 +2080,18 @@ safe-buffer/index.js:
             document.body.style.alignItems = 'stretch';
             messageInput.focus();
             startCountdown();
-            peerStatus.textContent = '\u043e\u0436\u0438\u0434\u0430\u043d\u0438\u0435 \u0441\u043e\u0431\u0435\u0441\u0435\u0434\u043d\u0438\u043a\u0430...';
+            peerStatus.textContent = t('waitingPeer');
             peerStatus.className = '';
             peerStatus.style.color = '#555555';
           }
         },
         onPeerStatus: function(peerCallsign, online) {
           if (online) {
-            peerStatus.textContent = peerCallsign + ': \u25cf \u043d\u0430 \u0441\u0432\u044f\u0437\u0438';
+            peerStatus.textContent = peerCallsign + ': \u25cf ' + t('online');
             peerStatus.className = 'online';
             peerStatus.style.color = '';
           } else {
-            peerStatus.textContent = peerCallsign + ': \u25cb \u043d\u0435\u0442 \u0441\u0432\u044f\u0437\u0438';
+            peerStatus.textContent = peerCallsign + ': \u25cb ' + t('offline');
             peerStatus.className = '';
             peerStatus.style.color = '#555555';
           }
@@ -1940,12 +2102,12 @@ safe-buffer/index.js:
         onThirdParty: function() {
           var warn = document.createElement('div');
           warn.style.cssText = 'color:#ff0000;text-align:center;padding:8px;font-size:13px;font-weight:bold;';
-          warn.textContent = '\u26a0 \u041e\u0411\u041d\u0410\u0420\u0423\u0416\u0415\u041d \u0422\u0420\u0415\u0422\u0418\u0419 \u0423\u0427\u0410\u0421\u0422\u041d\u0418\u041a! \u041a\u0410\u041d\u0410\u041b \u0421\u041a\u041e\u041c\u041f\u0420\u041e\u041c\u0415\u0422\u0418\u0420\u041e\u0412\u0410\u041d. \u0421\u041c\u0415\u041d\u0418\u0422\u0415 \u041a\u041e\u0414\u041e\u0412\u0423\u042e \u0424\u0420\u0410\u0417\u0423.';
+          warn.textContent = t('thirdParty');
           messageFeed.prepend(warn);
         }
       };
 
-      connectBtn.textContent = 'CONNECTING...';
+      connectBtn.textContent = t('connecting');
 
       // 10-second connection timeout
       var connectTimeout = setTimeout(function() {
@@ -1956,8 +2118,8 @@ safe-buffer/index.js:
           window.codec = null;
         }
         connectBtn.disabled = false;
-        connectBtn.textContent = 'CONNECT';
-        connectError.textContent = 'Брокер недоступен (таймаут ' + (CONNECT_TIMEOUT / 1000) + ' сек)';
+        connectBtn.textContent = t('connect');
+        connectError.textContent = t('brokerTimeout').replace('{s}', CONNECT_TIMEOUT / 1000);
         connectError.style.display = 'block';
       }, CONNECT_TIMEOUT);
 
@@ -1978,8 +2140,8 @@ safe-buffer/index.js:
         clearTimeout(connectTimeout);
         console.error('Telegraph error:', e);
         connectBtn.disabled = false;
-        connectBtn.textContent = 'CONNECT';
-        connectError.textContent = 'Ошибка подключения: ' + e.message;
+        connectBtn.textContent = t('connect');
+        connectError.textContent = t('connectErrorGeneric').replace('{msg}', e.message);
         connectError.style.display = 'block';
       }
     });
